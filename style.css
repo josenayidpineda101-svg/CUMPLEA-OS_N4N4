@@ -244,6 +244,9 @@ body {
   scrollbar-width: none;
   width: 100%;
   cursor: grab;
+  /* --- AJUSTES DE COHESIÓN CON JS Y MÓVILES --- */
+  touch-action: pan-y; /* Previene navegación accidental al hacer swipe */
+  -webkit-overflow-scrolling: touch; /* Suavidad nativa en Safari/iOS */
 }
 .carrusel:active { cursor: grabbing; }
 .carrusel::-webkit-scrollbar { display: none; }
@@ -252,7 +255,7 @@ body {
 .item-carrusel.polaroid {
   flex: 0 0 75%;
   background-color: var(--papel-vintage);
-  padding: 12px 12px 15px 12px; /* Se quitó el espacio gigante de abajo para usar flow natural */
+  padding: 12px 12px 15px 12px; 
   box-shadow: 3px 5px 10px rgba(0,0,0,0.4);
   display: flex;
   flex-direction: column;
@@ -261,12 +264,14 @@ body {
   scroll-snap-align: center;
   position: relative;
   user-select: none;
+  /* --- REFUERZO DE COHESIÓN --- */
+  -webkit-user-select: none; 
+  -webkit-user-drag: none; 
   height: max-content;
 }
 
-/* --- CLASE NUEVA: Agrandar polaroid y darle orientación horizontal --- */
 .item-carrusel.polaroid.polaroid-horizontal-grande {
-  flex: 0 0 95%; /* Ocupa más ancho en el carrusel, logrando su forma horizontal idónea */
+  flex: 0 0 95%; 
 }
 
 .polaroid.rotado-izq { transform: rotate(-2deg); }
@@ -279,14 +284,16 @@ body {
   background-color: var(--texto-oscuro);
   border: 1px solid rgba(0,0,0,0.2);
   pointer-events: none;
+  /* --- REFUERZO DE COHESIÓN --- */
+  -webkit-user-drag: none; /* Evita ghosting al arrastrar en Safari */
 }
 
 /* --- FOTO DE LIBERTAD: CON PROPORCIÓN HORIZONTAL (4:3) --- */
 .foto-especifica-libertad {
   width: 100%;
   height: auto;
-  aspect-ratio: 4 / 3; /* Obliga a la foto a mantenerse horizontal como querías */
-  object-fit: cover; /* Recorta perfectamente la imagen al marco horizontal */
+  aspect-ratio: 4 / 3; 
+  object-fit: cover; 
   background-color: var(--texto-oscuro);
 }
 
@@ -296,7 +303,7 @@ body {
   font-size: 0.9rem;
   text-align: center;
   width: 100%;
-  margin-top: 15px; /* Empuja el texto hacia abajo de manera natural, ¡Jamás lo pisará la foto! */
+  margin-top: 15px; 
 }
 
 /* Poema */
@@ -336,7 +343,7 @@ body {
 /* --- AJUSTE TEXTO SOLAPADO (Collage Fragmentos) --- */
 .item-collage.polaroid-grid {
   background-color: var(--papel-vintage);
-  padding: 8px 8px 12px 8px; /* Margen inferior natural, reemplaza los 30px antiguos */
+  padding: 8px 8px 12px 8px; 
   position: relative;
   box-shadow: 2px 3px 6px rgba(0,0,0,0.3);
   display: flex;
@@ -387,8 +394,6 @@ body {
   .item-collage.polaroid-grid:nth-child(3) {
     grid-column: span 1; 
   }
-
-  /* La regla ".foto-especifica-libertad { height: 240px; }" fue eliminada para que aspect-ratio funcione perfecto en cualquier tamaño de pantalla */
 
   .btn-prev { left: -5px; }
   .btn-next { right: -5px; }
