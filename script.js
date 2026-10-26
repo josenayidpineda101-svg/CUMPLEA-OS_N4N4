@@ -20,12 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   botonCorazon.addEventListener('click', () => {
+    // Manejo impecable del audio para políticas estrictas de Edge/Brave/Safari
     if (!musicaIniciada) {
       musica.volume = 0.4;
       let playPromise = musica.play();
       if (playPromise !== undefined) {
         playPromise.catch(error => {
-          console.log("Audio temporalmente bloqueado por el navegador");
+          console.log("Audio temporalmente bloqueado por el navegador, esperando interacción nativa.");
         });
       }
       musicaIniciada = true;
@@ -56,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
           fase1.classList.add('oculto');
           fase2.classList.remove('oculto');
           
-          void fase2.offsetWidth; 
+          void fase2.offsetWidth; // Reflow forzado (Excelente práctica para CSS transitions)
           
           fase2.style.opacity = '1';
           fase2.style.filter = 'none';
@@ -81,12 +82,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const iniciarAutoPlay = () => {
     if (autoPlayInterval) return; 
-    // Ajustado a 2500ms para mayor velocidad de transición
     autoPlayInterval = setInterval(() => {
       if (carrusel.scrollLeft + carrusel.clientWidth >= carrusel.scrollWidth - 10) {
         carrusel.scrollTo({ left: 0, behavior: 'smooth' });
       } else {
-        // Multiplicador subido ligeramente para deslizar sin tropiezos
         carrusel.scrollBy({ left: carrusel.clientWidth * 0.85, behavior: 'smooth' });
       }
     }, 2500); 
@@ -99,11 +98,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // Eventos para pausar/reanudar el carrusel
   carrusel.addEventListener('mouseenter', detenerAutoPlay);
   carrusel.addEventListener('mouseleave', iniciarAutoPlay);
   carrusel.addEventListener('touchstart', detenerAutoPlay, {passive: true});
   carrusel.addEventListener('touchend', iniciarAutoPlay);
 
+  // Controles manuales
   btnNext.addEventListener('click', () => {
     carrusel.scrollBy({ left: carrusel.clientWidth * 0.85, behavior: 'smooth' });
   });
@@ -116,28 +117,32 @@ document.addEventListener("DOMContentLoaded", () => {
   btnNext.addEventListener('mouseleave', iniciarAutoPlay);
   btnPrev.addEventListener('mouseleave', iniciarAutoPlay);
 
+  // Lógica de arrastre manual (Drag & Swipe) mejorada para UX cross-browser
   carrusel.addEventListener('mousedown', (e) => {
     isDown = true;
     carrusel.style.scrollSnapType = 'none'; 
+    carrusel.style.cursor = 'grabbing'; // UX: Indica que está agarrando
     startX = e.pageX - carrusel.offsetLeft;
     scrollLeft = carrusel.scrollLeft;
   });
 
   carrusel.addEventListener('mouseleave', () => {
+    if (!isDown) return; // Validación extra
     isDown = false;
     carrusel.style.scrollSnapType = 'x mandatory';
+    carrusel.style.cursor = 'grab'; // UX: Vuelve a la normalidad
   });
 
   carrusel.addEventListener('mouseup', () => {
     isDown = false;
     carrusel.style.scrollSnapType = 'x mandatory';
+    carrusel.style.cursor = 'grab'; // UX: Vuelve a la normalidad
   });
 
   carrusel.addEventListener('mousemove', (e) => {
     if (!isDown) return;
-    e.preventDefault();
+    e.preventDefault(); // Previene selección de texto accidental al arrastrar
     const x = e.pageX - carrusel.offsetLeft;
-    // Multiplicador subido a 2.5 para que reaccione más rápido y fluido al arrastrar
     const walk = (x - startX) * 2.5; 
     carrusel.scrollLeft = scrollLeft - walk;
   });
